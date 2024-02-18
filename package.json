@@ -22,9 +22,11 @@
   },
   "devDependencies": {
     "newman": "^6.0.0",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "prisma": "^5.9.1"
   },
   "engines": {
     "node": ">=18 <19"
-  }
+  },
+  "keywords": []
 }
