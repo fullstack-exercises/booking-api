@@ -10,8 +10,16 @@ import deleteUser from "../services/users/deleteUser.js";
 const router = Router();
 
 router.get("/", async (req, res) => {
-  const { genre, available } = req.query;
-  const users = await getUsers(genre, available);
+  const { username, password, name, email, phoneNumber, profilePicture } =
+    req.query;
+  const users = await getUsers(
+    username,
+    password,
+    name,
+    email,
+    phoneNumber,
+    profilePicture
+  );
   res.status(200).json(users);
 });
 
