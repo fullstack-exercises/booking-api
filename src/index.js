@@ -1,5 +1,8 @@
 import express from "express";
+
+// Routes
 import loginRouter from "./routes/login.js";
+import userRouter from "./routes/users.js";
 
 // Sentry
 import * as Sentry from "@sentry/node";
@@ -31,6 +34,7 @@ app.use(Sentry.Handlers.tracingHandler());
 app.use(express.json());
 
 app.use("/login", loginRouter);
+app.use("/users", userRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello world!");
