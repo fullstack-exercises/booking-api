@@ -46,6 +46,7 @@ router.put("/:id", async (req, res, next) => {
     const { username, password, name, email, phoneNumber, profilePicture } =
       req.body;
     const updatedUser = await updateUserById(
+      id,
       username,
       password,
       name,
