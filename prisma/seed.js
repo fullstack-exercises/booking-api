@@ -25,14 +25,6 @@ async function main() {
     });
   }
 
-  for (const booking of bookings) {
-    await prisma.booking.upsert({
-      where: { id: booking.id },
-      update: {},
-      create: booking,
-    });
-  }
-
   for (const amenity of amenities) {
     await prisma.amenity.upsert({
       where: { id: amenity.id },
@@ -53,11 +45,16 @@ async function main() {
     await prisma.property.upsert({
       where: { id: property.id },
       update: {},
-      create: {
-        ...property,
-        amenities: { connect: property.amenities.map((id) => ({ id })) },
-      },
+      create: property,
     });
+
+    for (const booking of bookings) {
+      await prisma.booking.upsert({
+        where: { id: booking.id },
+        update: {},
+        create: booking,
+      });
+    }
   }
 
   for (const review of reviews) {
