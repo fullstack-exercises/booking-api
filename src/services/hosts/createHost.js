@@ -20,9 +20,6 @@ const createHost = async (
       phoneNumber,
       profilePicture,
       aboutMe,
-      user: {
-        connect: { id: user_id },
-      },
     },
   });
 };
