@@ -6,6 +6,7 @@ import userRouter from "./routes/users.js";
 import hostsRouter from "./routes/hosts.js";
 import propertiesRouter from "./routes/properties.js";
 import amenitiesRouter from "./routes/amenities.js";
+import bookingsRouter from "./routes/bookings.js";
 
 // Sentry
 import * as Sentry from "@sentry/node";
@@ -42,6 +43,7 @@ app.use("/users", userRouter);
 app.use("/hosts", hostsRouter);
 app.use("/properties", propertiesRouter);
 app.use("/amenities", amenitiesRouter);
+app.use("/bookings", bookingsRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello world!");
