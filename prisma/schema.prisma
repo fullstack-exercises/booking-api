@@ -30,7 +30,7 @@ model Booking {
   numberOfGuests Int
   totalPrice     Int
   bookingStatus  String
-  property       Property @relation(fields: [propertyId], references: [id])
+  property       Property @relation(fields: [propertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   user           User     @relation(fields: [userId], references: [id])
 
   @@index([userId])
@@ -80,10 +80,7 @@ model Property {
 }
 
 model Amenity {
-  id         String    @id @default(uuid())
-  name       String
-  propertyId String?
-  property   Property? @relation(fields: [propertyId], references: [id])
-
-  @@index([propertyId])
+  id       String     @id @default(uuid())
+  name     String
+  property Property[]
 }
