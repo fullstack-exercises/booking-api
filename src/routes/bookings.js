@@ -10,14 +10,46 @@ import deleteBooking from "../services/bookings/deleteBooking.js";
 const router = Router();
 
 router.get("/", async (req, res) => {
-  const { name } = req.query;
-  const bookings = await getBookings(name);
+  const {
+    userId,
+    propertyId,
+    checkinDate,
+    checkoutDate,
+    numberOfGuests,
+    totalPrice,
+    bookingStatus,
+  } = req.query;
+  const bookings = await getBookings(
+    userId,
+    propertyId,
+    checkinDate,
+    checkoutDate,
+    numberOfGuests,
+    totalPrice,
+    bookingStatus
+  );
   res.status(200).json(bookings);
 });
 
 router.post("/", async (req, res) => {
-  const { name } = req.body;
-  const newBooking = await createBooking(name);
+  const {
+    userId,
+    propertyId,
+    checkinDate,
+    checkoutDate,
+    numberOfGuests,
+    totalPrice,
+    bookingStatus,
+  } = req.body;
+  const newBooking = await createBooking(
+    userId,
+    propertyId,
+    checkinDate,
+    checkoutDate,
+    numberOfGuests,
+    totalPrice,
+    bookingStatus
+  );
   res.status(201).json(newBooking);
 });
 
@@ -35,8 +67,25 @@ router.get("/:id", async (req, res, next) => {
 router.put("/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { name } = req.body;
-    const updatedBooking = await updateBookingById(id, name);
+    const {
+      userId,
+      propertyId,
+      checkinDate,
+      checkoutDate,
+      numberOfGuests,
+      totalPrice,
+      bookingStatus,
+    } = req.body;
+    const updatedBooking = await updateBookingById(
+      id,
+      userId,
+      propertyId,
+      checkinDate,
+      checkoutDate,
+      numberOfGuests,
+      totalPrice,
+      bookingStatus
+    );
     res.status(200).json(updatedBooking);
   } catch (error) {
     next(error);
