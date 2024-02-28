@@ -44,6 +44,7 @@ app.use("/users", userRouter);
 app.use("/hosts", hostsRouter);
 app.use("/properties", propertiesRouter);
 app.use("/amenities", amenitiesRouter);
+app.use("/bookings", bookingsRouter);
 app.use("/reviews", reviewsRouter);
 
 app.get("/", (req, res) => {

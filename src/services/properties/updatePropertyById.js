@@ -3,12 +3,15 @@ import NotFoundError from "../../errors/NotFoundError.js";
 
 const updatePropertyById = async (
   id,
-  username,
-  password,
-  name,
-  email,
-  phoneNumber,
-  profilePicture
+  title,
+  description,
+  location,
+  pricePerNight,
+  bedroomCount,
+  bathRoomCount,
+  maxGuestCount,
+  hostId,
+  rating
 ) => {
   const prisma = new PrismaClient();
   const updatedProperty = await prisma.property.updateMany({
@@ -16,12 +19,15 @@ const updatePropertyById = async (
       id,
     },
     data: {
-      username,
-      password,
-      name,
-      email,
-      phoneNumber,
-      profilePicture,
+      title,
+      description,
+      location,
+      pricePerNight,
+      bedroomCount,
+      bathRoomCount,
+      maxGuestCount,
+      hostId,
+      rating,
     },
   });
 
