@@ -7,58 +7,40 @@ import getPropertyById from "../services/properties/getPropertyById.js";
 import updatePropertyById from "../services/properties/updatePropertyById.js";
 import deleteProperty from "../services/properties/deleteProperty.js";
 
+// Middleware
+import authMiddleware from "../middleware/auth.js";
+import notFoundErrorHandler from "../middleware/notFoundErrorHandler.js";
+
 const router = Router();
 
-router.get("/", async (req, res) => {
-  const {
-    title,
-    description,
-    location,
-    pricePerNight,
-    bedroomCount,
-    bathRoomCount,
-    maxGuestCount,
-    hostId,
-    rating,
-  } = req.query;
-  const properties = await getProperties(
-    title,
-    description,
-    location,
-    pricePerNight,
-    bedroomCount,
-    bathRoomCount,
-    maxGuestCount,
-    hostId,
-    rating
-  );
-  res.status(200).json(properties);
-});
-
-router.post("/", async (req, res) => {
-  const {
-    title,
-    description,
-    location,
-    pricePerNight,
-    bedroomCount,
-    bathRoomCount,
-    maxGuestCount,
-    hostId,
-    rating,
-  } = req.body;
-  const newProperty = await createProperty(
-    title,
-    description,
-    location,
-    pricePerNight,
-    bedroomCount,
-    bathRoomCount,
-    maxGuestCount,
-    hostId,
-    rating
-  );
-  res.status(201).json(newProperty);
+router.get("/", async (req, res, next) => {
+  try {
+    const {
+      title,
+      description,
+      location,
+      pricePerNight,
+      bedroomCount,
+      bathRoomCount,
+      maxGuestCount,
+      hostId,
+      rating,
+    } = req.query;
+    const properties = await getProperties(
+      title,
+      description,
+      location,
+      pricePerNight,
+      bedroomCount,
+      bathRoomCount,
+      maxGuestCount,
+      hostId,
+      rating
+    );
+    res.status(200).json(properties);
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.get("/:id", async (req, res, next) => {
@@ -72,7 +54,38 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
-router.put("/:id", async (req, res, next) => {
+router.post("/", authMiddleware, async (req, res, next) => {
+  try {
+    const {
+      title,
+      description,
+      location,
+      pricePerNight,
+      bedroomCount,
+      bathRoomCount,
+      maxGuestCount,
+      hostId,
+      rating,
+    } = req.body;
+    const newProperty = await createProperty(
+      title,
+      description,
+      location,
+      pricePerNight,
+      bedroomCount,
+      bathRoomCount,
+      maxGuestCount,
+      hostId,
+      rating
+    );
+    res.status(201).json(newProperty);
+  } catch (error) {
+    next(error);
+  }
+  notFoundErrorHandler;
+});
+
+router.put("/:id", authMiddleware, async (req, res, next) => {
   try {
     const { id } = req.params;
     const {
@@ -102,9 +115,10 @@ router.put("/:id", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+  notFoundErrorHandler;
 });
 
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", authMiddleware, async (req, res, next) => {
   try {
     const { id } = req.params;
     const deletedPropertyId = await deleteProperty(id);
@@ -115,6 +129,7 @@ router.delete("/:id", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+  notFoundErrorHandler;
 });
 
 export default router;
