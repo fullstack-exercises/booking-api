@@ -1,4 +1,5 @@
 import express from "express";
+import "dotenv/config";
 
 // Routes
 import loginRouter from "./routes/login.js";
@@ -12,6 +13,10 @@ import reviewsRouter from "./routes/reviews.js";
 // Sentry
 import * as Sentry from "@sentry/node";
 import { ProfilingIntegration } from "@sentry/profiling-node";
+
+// Middleware
+import notFoundErrorHandler from "./middleware/notFoundErrorHandler.js";
+import log from "./middleware/logMiddleware.js";
 
 const app = express();
 
@@ -38,6 +43,9 @@ app.use(Sentry.Handlers.tracingHandler());
 
 app.use(express.json());
 
+// Log
+app.use(log);
+
 // Routes
 app.use("/login", loginRouter);
 app.use("/users", userRouter);
@@ -57,6 +65,16 @@ app.get("/debug-sentry", function mainHandler(req, res) {
 
 // The error handler must be registered before any other error middleware and after all controllers
 app.use(Sentry.Handlers.errorHandler());
+
+// Optional fallthrough error handler
+app.use(function onError(err, req, res, next) {
+  // The error id is attached to `res.sentry` to be returned
+  // and optionally displayed to the user for support.
+  res.statusCode = 500;
+  res.end(res.sentry + "\n");
+});
+
+app.use(notFoundErrorHandler);
 
 app.listen(3000, () => {
   console.log("Server is listening on port 3000");

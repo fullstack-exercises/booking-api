@@ -7,6 +7,10 @@ import getUserById from "../services/users/getUserById.js";
 import updateUserById from "../services/users/updateUserById.js";
 import deleteUser from "../services/users/deleteUser.js";
 
+// Middleware
+import authMiddleware from "../middleware/auth.js";
+import notFoundErrorHandler from "../middleware/notFoundErrorHandler.js";
+
 const router = Router();
 
 router.get("/", async (req, res) => {
@@ -23,7 +27,7 @@ router.get("/", async (req, res) => {
   res.status(200).json(users);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", authMiddleware, async (req, res) => {
   const { username, password, name, email, phoneNumber, profilePicture } =
     req.body;
   const newUser = await createUser(
@@ -48,7 +52,7 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
-router.put("/:id", async (req, res, next) => {
+router.put("/:id", authMiddleware, async (req, res, next) => {
   try {
     const { id } = req.params;
     const { username, password, name, email, phoneNumber, profilePicture } =
@@ -66,9 +70,10 @@ router.put("/:id", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+  notFoundErrorHandler;
 });
 
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", authMiddleware, async (req, res, next) => {
   try {
     const { id } = req.params;
     const deletedUserId = await deleteUser(id);
@@ -79,6 +84,7 @@ router.delete("/:id", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+  notFoundErrorHandler;
 });
 
 export default router;
