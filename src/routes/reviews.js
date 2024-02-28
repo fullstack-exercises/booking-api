@@ -7,18 +7,20 @@ import getReviewById from "../services/reviews/getReviewById.js";
 import updateReviewById from "../services/reviews/updateReviewById.js";
 import deleteReview from "../services/reviews/deleteReview.js";
 
+// Middleware
+import authMiddleware from "../middleware/auth.js";
+import notFoundErrorHandler from "../middleware/notFoundErrorHandler.js";
+
 const router = Router();
 
-router.get("/", async (req, res) => {
-  const { userId, propertyId, rating, comment } = req.query;
-  const reviews = await getReviews(userId, propertyId, rating, comment);
-  res.status(200).json(reviews);
-});
-
-router.post("/", async (req, res) => {
-  const { userId, propertyId, rating, comment } = req.body;
-  const newReview = await createReview(userId, propertyId, rating, comment);
-  res.status(201).json(newReview);
+router.get("/", async (req, res, next) => {
+  try {
+    const { userId, propertyId, rating, comment } = req.query;
+    const reviews = await getReviews(userId, propertyId, rating, comment);
+    res.status(200).json(reviews);
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.get("/:id", async (req, res, next) => {
@@ -32,7 +34,17 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
-router.put("/:id", async (req, res, next) => {
+router.post("/", authMiddleware, async (req, res, next) => {
+  try {
+    const { userId, propertyId, rating, comment } = req.body;
+    const newReview = await createReview(userId, propertyId, rating, comment);
+    res.status(201).json(newReview);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.put("/:id", authMiddleware, async (req, res, next) => {
   try {
     const { id } = req.params;
     const { userId, propertyId, rating, comment } = req.body;
@@ -47,9 +59,10 @@ router.put("/:id", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+  notFoundErrorHandler;
 });
 
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", authMiddleware, async (req, res, next) => {
   try {
     const { id } = req.params;
     const deletedReviewId = await deleteReview(id);
@@ -60,6 +73,7 @@ router.delete("/:id", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+  notFoundErrorHandler;
 });
 
 export default router;
