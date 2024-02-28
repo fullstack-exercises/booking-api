@@ -8,7 +8,6 @@ import propertiesData from "../src/data/properties.json" assert { type: "json" }
 import reviewsData from "../src/data/reviews.json" assert { type: "json" };
 
 const prisma = new PrismaClient({ log: ["query", "info", "warn", "error"] });
-
 async function main() {
   const { users } = userData;
   const { bookings } = bookingData;
@@ -47,14 +46,14 @@ async function main() {
       update: {},
       create: property,
     });
+  }
 
-    for (const booking of bookings) {
-      await prisma.booking.upsert({
-        where: { id: booking.id },
-        update: {},
-        create: booking,
-      });
-    }
+  for (const booking of bookings) {
+    await prisma.booking.upsert({
+      where: { id: booking.id },
+      update: {},
+      create: booking,
+    });
   }
 
   for (const review of reviews) {

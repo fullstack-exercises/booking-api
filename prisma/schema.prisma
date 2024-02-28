@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -31,7 +28,7 @@ model Booking {
   numberOfGuests Int
   totalPrice     Int
   bookingStatus  String
-  property       Property @relation(fields: [propertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  property       Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   user           User     @relation(fields: [userId], references: [id])
 
   @@index([userId])
@@ -51,35 +48,33 @@ model Host {
 }
 
 model Review {
-  id         String @id @default(uuid())
-  userId     String @default(uuid())
-  propertyId String @default(uuid())
+  id         String   @id @default(uuid())
+  userId     String   @default(uuid())
+  propertyId String   @default(uuid())
   rating     Int
   comment    String
-
-  user     User     @relation(fields: [userId], references: [id])
-  property Property @relation(fields: [propertyId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([propertyId])
 }
 
 model Property {
-  id            String  @id @default(uuid())
-  hostId        String  @default(uuid())
+  id            String    @id @default(uuid())
+  hostId        String    @default(uuid())
   title         String
   description   String
   location      String
-  pricePerNight Decimal @db.Decimal(10, 2)
+  pricePerNight Decimal   @db.Decimal(10, 2)
   bedroomCount  Int
   bathRoomCount Int
   maxGuestCount Int
   rating        Int
-
-  host      Host      @relation(fields: [hostId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  amenities Amenity[]
-  reviews   Review[]
-  bookings  Booking[]
+  bookings      Booking[]
+  host          Host      @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  reviews       Review[]
+  amenities     Amenity[] @relation("AmenityToProperty")
 
   @@index([hostId])
 }
@@ -87,5 +82,5 @@ model Property {
 model Amenity {
   id         String     @id @default(uuid())
   name       String
-  properties Property[]
+  properties Property[] @relation("AmenityToProperty")
 }
