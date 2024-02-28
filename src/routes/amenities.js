@@ -7,18 +7,20 @@ import getAmenityById from "../services/amenities/getAmenityById.js";
 import updateAmenityById from "../services/amenities/updateAmenityById.js";
 import deleteAmenity from "../services/amenities/deleteAmenity.js";
 
+// Middleware
+import authMiddleware from "../middleware/auth.js";
+import notFoundErrorHandler from "../middleware/notFoundErrorHandler.js";
+
 const router = Router();
 
 router.get("/", async (req, res) => {
-  const { name } = req.query;
-  const amenities = await getAmenities(name);
-  res.status(200).json(amenities);
-});
-
-router.post("/", async (req, res) => {
-  const { name } = req.body;
-  const newAmenity = await createAmenity(name);
-  res.status(201).json(newAmenity);
+  try {
+    const { name } = req.query;
+    const amenities = await getAmenities(name);
+    res.status(200).json(amenities);
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.get("/:id", async (req, res, next) => {
@@ -32,7 +34,18 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
-router.put("/:id", async (req, res, next) => {
+router.post("/", authMiddleware, async (req, res, next) => {
+  try {
+    const { name } = req.body;
+    const newAmenity = await createAmenity(name);
+    res.status(201).json(newAmenity);
+  } catch (error) {
+    next(error);
+  }
+  notFoundErrorHandler;
+});
+
+router.put("/:id", authMiddleware, async (req, res, next) => {
   try {
     const { id } = req.params;
     const { name } = req.body;
@@ -41,9 +54,10 @@ router.put("/:id", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+  notFoundErrorHandler;
 });
 
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", authMiddleware, async (req, res, next) => {
   try {
     const { id } = req.params;
     const deletedAmenityId = await deleteAmenity(id);
@@ -54,6 +68,7 @@ router.delete("/:id", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+  notFoundErrorHandler;
 });
 
 export default router;
