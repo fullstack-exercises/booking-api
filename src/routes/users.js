@@ -13,32 +13,22 @@ import notFoundErrorHandler from "../middleware/notFoundErrorHandler.js";
 
 const router = Router();
 
-router.get("/", async (req, res) => {
-  const { username, password, name, email, phoneNumber, profilePicture } =
-    req.query;
-  const users = await getUsers(
-    username,
-    password,
-    name,
-    email,
-    phoneNumber,
-    profilePicture
-  );
-  res.status(200).json(users);
-});
-
-router.post("/", authMiddleware, async (req, res) => {
-  const { username, password, name, email, phoneNumber, profilePicture } =
-    req.body;
-  const newUser = await createUser(
-    username,
-    password,
-    name,
-    email,
-    phoneNumber,
-    profilePicture
-  );
-  res.status(201).json(newUser);
+router.get("/", async (req, res, next) => {
+  try {
+    const { username, password, name, email, phoneNumber, profilePicture } =
+      req.query;
+    const users = await getUsers(
+      username,
+      password,
+      name,
+      email,
+      phoneNumber,
+      profilePicture
+    );
+    res.status(200).json(users);
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.get("/:id", async (req, res, next) => {
@@ -47,6 +37,24 @@ router.get("/:id", async (req, res, next) => {
     const user = await getUserById(id);
 
     res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post("/", authMiddleware, async (req, res, next) => {
+  try {
+    const { username, password, name, email, phoneNumber, profilePicture } =
+      req.body;
+    const newUser = await createUser(
+      username,
+      password,
+      name,
+      email,
+      phoneNumber,
+      profilePicture
+    );
+    res.status(201).json(newUser);
   } catch (error) {
     next(error);
   }
