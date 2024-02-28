@@ -7,50 +7,36 @@ import getBookingById from "../services/bookings/getBookingById.js";
 import updateBookingById from "../services/bookings/updateBookingById.js";
 import deleteBooking from "../services/bookings/deleteBooking.js";
 
+// Middleware
+import authMiddleware from "../middleware/auth.js";
+import notFoundErrorHandler from "../middleware/notFoundErrorHandler.js";
+
 const router = Router();
 
-router.get("/", async (req, res) => {
-  const {
-    userId,
-    propertyId,
-    checkinDate,
-    checkoutDate,
-    numberOfGuests,
-    totalPrice,
-    bookingStatus,
-  } = req.query;
-  const bookings = await getBookings(
-    userId,
-    propertyId,
-    checkinDate,
-    checkoutDate,
-    numberOfGuests,
-    totalPrice,
-    bookingStatus
-  );
-  res.status(200).json(bookings);
-});
-
-router.post("/", async (req, res) => {
-  const {
-    userId,
-    propertyId,
-    checkinDate,
-    checkoutDate,
-    numberOfGuests,
-    totalPrice,
-    bookingStatus,
-  } = req.body;
-  const newBooking = await createBooking(
-    userId,
-    propertyId,
-    checkinDate,
-    checkoutDate,
-    numberOfGuests,
-    totalPrice,
-    bookingStatus
-  );
-  res.status(201).json(newBooking);
+router.get("/", async (req, res, next) => {
+  try {
+    const {
+      userId,
+      propertyId,
+      checkinDate,
+      checkoutDate,
+      numberOfGuests,
+      totalPrice,
+      bookingStatus,
+    } = req.query;
+    const bookings = await getBookings(
+      userId,
+      propertyId,
+      checkinDate,
+      checkoutDate,
+      numberOfGuests,
+      totalPrice,
+      bookingStatus
+    );
+    res.status(200).json(bookings);
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.get("/:id", async (req, res, next) => {
@@ -64,7 +50,34 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
-router.put("/:id", async (req, res, next) => {
+router.post("/", authMiddleware, async (req, res, next) => {
+  try {
+    const {
+      userId,
+      propertyId,
+      checkinDate,
+      checkoutDate,
+      numberOfGuests,
+      totalPrice,
+      bookingStatus,
+    } = req.body;
+    const newBooking = await createBooking(
+      userId,
+      propertyId,
+      checkinDate,
+      checkoutDate,
+      numberOfGuests,
+      totalPrice,
+      bookingStatus
+    );
+    res.status(201).json(newBooking);
+  } catch (error) {
+    next(error);
+  }
+  notFoundErrorHandler;
+});
+
+router.put("/:id", authMiddleware, async (req, res, next) => {
   try {
     const { id } = req.params;
     const {
@@ -90,9 +103,10 @@ router.put("/:id", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+  notFoundErrorHandler;
 });
 
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", authMiddleware, async (req, res, next) => {
   try {
     const { id } = req.params;
     const deletedBookingId = await deleteBooking(id);
@@ -103,6 +117,7 @@ router.delete("/:id", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+  notFoundErrorHandler;
 });
 
 export default router;

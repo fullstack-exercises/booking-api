@@ -1,6 +1,9 @@
-const notFoundErrorHandler = (err, req, res, next) => {
+const notFoundErrorHandler = (err, req, res) => {
   console.error(err);
-  res.status(500).json({ message: "Something went wrong!" });
+  res.status(500).json({
+    message:
+      "An error occurred on the server, please double-check your request!",
+  });
 };
 
 export default notFoundErrorHandler;
