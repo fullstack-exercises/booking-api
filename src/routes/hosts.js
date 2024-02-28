@@ -7,50 +7,36 @@ import getHostById from "../services/hosts/getHostById.js";
 import updateHostById from "../services/hosts/updateHostById.js";
 import deleteHost from "../services/hosts/deleteHost.js";
 
+// Middleware
+import authMiddleware from "../middleware/auth.js";
+import notFoundErrorHandler from "../middleware/notFoundErrorHandler.js";
+
 const router = Router();
 
-router.get("/", async (req, res) => {
-  const {
-    username,
-    password,
-    name,
-    email,
-    phoneNumber,
-    profilePicture,
-    aboutMe,
-  } = req.query;
-  const hosts = await getHosts(
-    username,
-    password,
-    name,
-    email,
-    phoneNumber,
-    profilePicture,
-    aboutMe
-  );
-  res.status(200).json(hosts);
-});
-
-router.post("/", async (req, res) => {
-  const {
-    username,
-    password,
-    name,
-    email,
-    phoneNumber,
-    profilePicture,
-    aboutMe,
-  } = req.body;
-  const newHost = await createHost(
-    username,
-    password,
-    name,
-    email,
-    phoneNumber,
-    profilePicture,
-    aboutMe
-  );
-  res.status(201).json(newHost);
+router.get("/", async (req, res, next) => {
+  try {
+    const {
+      username,
+      password,
+      name,
+      email,
+      phoneNumber,
+      profilePicture,
+      aboutMe,
+    } = req.query;
+    const hosts = await getHosts(
+      username,
+      password,
+      name,
+      email,
+      phoneNumber,
+      profilePicture,
+      aboutMe
+    );
+    res.status(200).json(hosts);
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.get("/:id", async (req, res, next) => {
@@ -64,7 +50,34 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
-router.put("/:id", async (req, res, next) => {
+router.post("/", authMiddleware, async (req, res, next) => {
+  try {
+    const {
+      username,
+      password,
+      name,
+      email,
+      phoneNumber,
+      profilePicture,
+      aboutMe,
+    } = req.body;
+    const newHost = await createHost(
+      username,
+      password,
+      name,
+      email,
+      phoneNumber,
+      profilePicture,
+      aboutMe
+    );
+    res.status(201).json(newHost);
+  } catch (error) {
+    next(error);
+  }
+  notFoundErrorHandler;
+});
+
+router.put("/:id", authMiddleware, async (req, res, next) => {
   try {
     const { id } = req.params;
     const {
@@ -90,9 +103,10 @@ router.put("/:id", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+  notFoundErrorHandler;
 });
 
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", authMiddleware, async (req, res, next) => {
   try {
     const { id } = req.params;
     const deletedHostId = await deleteHost(id);
@@ -103,6 +117,7 @@ router.delete("/:id", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+  notFoundErrorHandler;
 });
 
 export default router;
