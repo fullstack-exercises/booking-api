@@ -24,7 +24,49 @@ router.get("/", async (req, res, next) => {
       phoneNumber,
       profilePicture
     );
+
+    console.log("username", username);
+
+    console.log("password", password);
+
+    console.log("name", name);
+
+    console.log("email", email);
+    console.log("phoneNumber", phoneNumber);
+    console.log("profilePicture", profilePicture);
+    console.log("user", users);
+
+    console.log("req.query", req.query);
+    console.log("req", req);
+
     res.status(200).json(users);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post("/", async (req, res, next) => {
+  try {
+    const { username, password, name, email, phoneNumber, profilePicture } =
+      req.body;
+    const newUser = await createUser(
+      username,
+      password,
+      name,
+      email,
+      phoneNumber,
+      profilePicture
+    );
+
+    console.log("username", username);
+    console.log("password", password);
+    console.log("name", name);
+    console.log("email", email);
+    console.log("phoneNumber", phoneNumber);
+    console.log("profilePicture", profilePicture);
+    console.log(newUser);
+
+    res.status(201).json(newUser);
   } catch (error) {
     next(error);
   }
@@ -42,25 +84,6 @@ router.get("/:id", async (req, res, next) => {
     } else {
       res.status(200).json(user);
     }
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.post("/", authMiddleware, async (req, res, next) => {
-  try {
-    const { username, password, name, email, phoneNumber, profilePicture } =
-      req.body;
-    const newUser = await createUser(
-      username,
-      password,
-      name,
-      email,
-      phoneNumber,
-      profilePicture
-    );
-
-    res.status(201).json(newUser);
   } catch (error) {
     next(error);
   }
@@ -84,7 +107,6 @@ router.put("/:id", authMiddleware, async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-  notFoundErrorHandler;
 });
 
 router.delete("/:id", authMiddleware, async (req, res, next) => {
@@ -98,7 +120,6 @@ router.delete("/:id", authMiddleware, async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-  notFoundErrorHandler;
 });
 
 export default router;

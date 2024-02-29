@@ -14,12 +14,12 @@ const getBookings = async (
   return prisma.booking.findMany({
     where: {
       userId,
-      propertyId,
-      checkinDate,
-      checkoutDate,
-      numberOfGuests,
-      totalPrice,
-      bookingStatus,
+      // propertyId,
+      // checkinDate,
+      // checkoutDate,
+      // numberOfGuests,
+      // totalPrice,
+      // bookingStatus,
     },
   });
 };

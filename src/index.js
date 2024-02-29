@@ -55,9 +55,9 @@ app.use("/amenities", amenitiesRouter);
 app.use("/bookings", bookingsRouter);
 app.use("/reviews", reviewsRouter);
 
-app.get("/", (req, res) => {
-  res.send("Hello world!");
-});
+// app.get("/", (req, res) => {
+//   res.send("Hello world!");
+// });
 
 app.get("/debug-sentry", function mainHandler(req, res) {
   throw new Error("My first Sentry error!");
