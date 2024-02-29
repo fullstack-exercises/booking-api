@@ -90,6 +90,21 @@ router.post("/", authMiddleware, async (req, res, next) => {
       hostId,
       rating,
     } = req.body;
+
+    if (
+      !title ||
+      !description ||
+      !location ||
+      !pricePerNight ||
+      !bedroomCount ||
+      !bathRoomCount ||
+      !maxGuestCount
+    ) {
+      return res
+        .status(400)
+        .json({ message: "All fields are required to create a property" });
+    }
+
     const newProperty = await createProperty(
       title,
       description,

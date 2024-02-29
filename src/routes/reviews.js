@@ -60,6 +60,15 @@ router.get("/:id", async (req, res, next) => {
 router.post("/", authMiddleware, async (req, res, next) => {
   try {
     const { userId, propertyId, rating, comment } = req.body;
+
+    if (!rating || !comment) {
+      return res
+        .status(400)
+        .json({
+          message: "Rating and comment are required to create a review",
+        });
+    }
+
     const newReview = await createReview(userId, propertyId, rating, comment);
 
     res.status(201).json(newReview);

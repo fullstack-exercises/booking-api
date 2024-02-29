@@ -60,6 +60,13 @@ router.param("id", async (req, res, next, id) => {
 router.post("/", authMiddleware, async (req, res, next) => {
   try {
     const { name } = req.body;
+
+    if (!name) {
+      return res
+        .status(400)
+        .json({ message: "Name is required to create a amenity" });
+    }
+
     const newAmenity = await createAmenity(name);
     res.status(201).json(newAmenity);
   } catch (error) {

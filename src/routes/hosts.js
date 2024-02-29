@@ -84,6 +84,13 @@ router.post("/", authMiddleware, async (req, res, next) => {
       profilePicture,
       aboutMe,
     } = req.body;
+
+    if (!username || !password) {
+      return res
+        .status(400)
+        .json({ message: "Username and password are required" });
+    }
+
     const newHost = await createHost(
       username,
       password,

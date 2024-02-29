@@ -84,6 +84,13 @@ router.post("/", authMiddleware, async (req, res, next) => {
       totalPrice,
       bookingStatus,
     } = req.body;
+
+    if (!checkinDate || !checkoutDate || !numberOfGuests || !totalPrice) {
+      return res
+        .status(400)
+        .json({ message: "All fields are required to create a booking" });
+    }
+
     const newBooking = await createBooking(
       userId,
       propertyId,
