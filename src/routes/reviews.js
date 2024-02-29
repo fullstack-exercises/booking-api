@@ -43,11 +43,7 @@ router.post("/", authMiddleware, async (req, res, next) => {
     const { userId, propertyId, rating, comment } = req.body;
     const newReview = await createReview(userId, propertyId, rating, comment);
 
-    if (newReview) {
-      res.status(200).json(newReview);
-    } else {
-      res.status(404).json({ message: `Review with id ${id} was not found` });
-    }
+    res.status(200).json(newReview);
   } catch (error) {
     next(error);
   }

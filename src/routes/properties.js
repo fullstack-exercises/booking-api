@@ -48,7 +48,11 @@ router.get("/:id", async (req, res, next) => {
     const { id } = req.params;
     const property = await getPropertyById(id);
 
-    res.status(200).json(property);
+    if (property) {
+      res.status(200).json(property);
+    } else {
+      res.status(404).json({ message: `Property with id ${id} was not found` });
+    }
   } catch (error) {
     next(error);
   }
@@ -113,7 +117,12 @@ router.put("/:id", authMiddleware, async (req, res, next) => {
       hostId,
       rating
     );
-    res.status(200).json(updatedProperty);
+
+    if (updatedProperty) {
+      res.status(200).json(updatedProperty);
+    } else {
+      res.status(404).json({ message: `Property with id ${id} was not found` });
+    }
   } catch (error) {
     next(error);
   }
@@ -125,9 +134,13 @@ router.delete("/:id", authMiddleware, async (req, res, next) => {
     const { id } = req.params;
     const deletedPropertyId = await deleteProperty(id);
 
-    res.status(200).json({
-      message: `Property with id ${deletedPropertyId} was deleted!`,
-    });
+    if (deletedPropertyId) {
+      res.status(200).json({
+        message: `Property with id ${deletedPropertyId} was deleted!`,
+      });
+    } else {
+      res.status(404).json({ message: `Property with id ${id} was not found` });
+    }
   } catch (error) {
     next(error);
   }

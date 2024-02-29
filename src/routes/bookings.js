@@ -45,7 +45,11 @@ router.get("/:id", async (req, res, next) => {
     const { id } = req.params;
     const booking = await getBookingById(id);
 
-    res.status(200).json(booking);
+    if (booking) {
+      res.status(200).json(booking);
+    } else {
+      res.status(404).json({ message: `Booking with id ${id} was not found` });
+    }
   } catch (error) {
     next(error);
   }
@@ -100,7 +104,12 @@ router.put("/:id", authMiddleware, async (req, res, next) => {
       totalPrice,
       bookingStatus
     );
-    res.status(200).json(updatedBooking);
+
+    if (updatedBooking) {
+      res.status(200).json(updatedBooking);
+    } else {
+      res.status(404).json({ message: `Booking with id ${id} was not found` });
+    }
   } catch (error) {
     next(error);
   }
@@ -112,9 +121,13 @@ router.delete("/:id", authMiddleware, async (req, res, next) => {
     const { id } = req.params;
     const deletedBookingId = await deleteBooking(id);
 
-    res.status(200).json({
-      message: `Booking with id ${deletedBookingId} was deleted!`,
-    });
+    if (deletedBookingId) {
+      res.status(200).json({
+        message: `Booking with id ${deletedBookingId} was deleted!`,
+      });
+    } else {
+      res.status(404).json({ message: `Booking with id ${id} was not found` });
+    }
   } catch (error) {
     next(error);
   }

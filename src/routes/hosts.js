@@ -44,7 +44,11 @@ router.get("/:id", async (req, res, next) => {
     const { id } = req.params;
     const host = await getHostById(id);
 
-    res.status(200).json(host);
+    if (host) {
+      res.status(200).json(host);
+    } else {
+      res.status(404).json({ message: `Host with id ${id} was not found` });
+    }
   } catch (error) {
     next(error);
   }
@@ -99,7 +103,12 @@ router.put("/:id", authMiddleware, async (req, res, next) => {
       profilePicture,
       aboutMe
     );
-    res.status(200).json(updatedHost);
+
+    if (updatedHost) {
+      res.status(200).json(updatedHost);
+    } else {
+      res.status(404).json({ message: `Host with id ${id} was not found` });
+    }
   } catch (error) {
     next(error);
   }
@@ -111,9 +120,13 @@ router.delete("/:id", authMiddleware, async (req, res, next) => {
     const { id } = req.params;
     const deletedHostId = await deleteHost(id);
 
-    res.status(200).json({
-      message: `Host with id ${deletedHostId} was deleted!`,
-    });
+    if (deletedHostId) {
+      res.status(200).json({
+        message: `Host with id ${deletedHostId} was deleted!`,
+      });
+    } else {
+      res.status(404).json({ message: `Host with id ${id} was not found` });
+    }
   } catch (error) {
     next(error);
   }
