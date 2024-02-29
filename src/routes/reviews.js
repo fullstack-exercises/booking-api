@@ -13,11 +13,30 @@ import notFoundErrorHandler from "../middleware/notFoundErrorHandler.js";
 
 const router = Router();
 
+const reviewExists = async (id) => {
+  const review = await getReviewById(id);
+  return !!review;
+};
+
 router.get("/", async (req, res, next) => {
   try {
     const { userId, propertyId, rating, comment } = req.query;
     const reviews = await getReviews(userId, propertyId, rating, comment);
     res.status(200).json(reviews);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.param("id", async (req, res, next, id) => {
+  try {
+    const exists = await reviewExists(id);
+    if (!exists) {
+      return res
+        .status(404)
+        .json({ message: `Review with id ${id} does not exist` });
+    }
+    next();
   } catch (error) {
     next(error);
   }
