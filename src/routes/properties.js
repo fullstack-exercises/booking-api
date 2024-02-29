@@ -83,7 +83,6 @@ router.post("/", authMiddleware, async (req, res, next) => {
       rating
     );
 
-    console.log("property", newProperty);
     res.status(201).json(newProperty);
   } catch (error) {
     next(error);

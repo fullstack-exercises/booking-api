@@ -43,7 +43,7 @@ router.post("/", authMiddleware, async (req, res, next) => {
     const { userId, propertyId, rating, comment } = req.body;
     const newReview = await createReview(userId, propertyId, rating, comment);
 
-    res.status(200).json(newReview);
+    res.status(201).json(newReview);
   } catch (error) {
     next(error);
   }

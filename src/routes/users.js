@@ -24,21 +24,6 @@ router.get("/", async (req, res, next) => {
       phoneNumber,
       profilePicture
     );
-
-    console.log("username", username);
-
-    console.log("password", password);
-
-    console.log("name", name);
-
-    console.log("email", email);
-    console.log("phoneNumber", phoneNumber);
-    console.log("profilePicture", profilePicture);
-    console.log("user", users);
-
-    console.log("req.query", req.query);
-    console.log("req", req);
-
     res.status(200).json(users);
   } catch (error) {
     next(error);
@@ -57,14 +42,6 @@ router.post("/", async (req, res, next) => {
       phoneNumber,
       profilePicture
     );
-
-    console.log("username", username);
-    console.log("password", password);
-    console.log("name", name);
-    console.log("email", email);
-    console.log("phoneNumber", phoneNumber);
-    console.log("profilePicture", profilePicture);
-    console.log(newUser);
 
     res.status(201).json(newUser);
   } catch (error) {

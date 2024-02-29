@@ -34,7 +34,6 @@ router.get("/", async (req, res, next) => {
       bookingStatus
     );
     res.status(200).json(bookings);
-    console.log("bookings", bookings);
   } catch (error) {
     next(error);
   }
