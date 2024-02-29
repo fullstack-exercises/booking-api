@@ -103,7 +103,12 @@ router.put("/:id", authMiddleware, async (req, res, next) => {
       phoneNumber,
       profilePicture
     );
-    res.status(200).json(updatedUser);
+
+    if (updatedUser) {
+      res.status(200).json(updatedUser);
+    } else {
+      res.status(404).json({ message: `User with id ${id} was not found` });
+    }
   } catch (error) {
     next(error);
   }
@@ -114,9 +119,13 @@ router.delete("/:id", authMiddleware, async (req, res, next) => {
     const { id } = req.params;
     const deletedUserId = await deleteUser(id);
 
-    res.status(200).json({
-      message: `User with id ${deletedUserId} was deleted!`,
-    });
+    if (deletedUserId) {
+      res.status(200).json({
+        message: `User with id ${deletedUserId} was deleted!`,
+      });
+    } else {
+      res.status(404).json({ message: `User with id ${id} was not found` });
+    }
   } catch (error) {
     next(error);
   }
