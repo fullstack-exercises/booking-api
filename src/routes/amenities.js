@@ -28,7 +28,11 @@ router.get("/:id", async (req, res, next) => {
     const { id } = req.params;
     const amenity = await getAmenityById(id);
 
-    res.status(200).json(amenity);
+    if (amenity) {
+      res.status(200).json(amenity);
+    } else {
+      res.status(404).json({ message: `Amenity with id ${id} was not found` });
+    }
   } catch (error) {
     next(error);
   }
@@ -50,7 +54,12 @@ router.put("/:id", authMiddleware, async (req, res, next) => {
     const { id } = req.params;
     const { name } = req.body;
     const updatedAmenity = await updateAmenityById(id, name);
-    res.status(200).json(updatedAmenity);
+
+    if (updatedAmenity) {
+      res.status(200).json(updatedAmenity);
+    } else {
+      res.status(404).json({ message: `Amenity with id ${id} was not found` });
+    }
   } catch (error) {
     next(error);
   }
@@ -62,9 +71,13 @@ router.delete("/:id", authMiddleware, async (req, res, next) => {
     const { id } = req.params;
     const deletedAmenityId = await deleteAmenity(id);
 
-    res.status(200).json({
-      message: `Amenity with id ${deletedAmenityId} was deleted!`,
-    });
+    if (deletedAmenityId) {
+      res.status(200).json({
+        message: `Amenity with id ${deletedAmenityId} was deleted!`,
+      });
+    } else {
+      res.status(404).json({ message: `Amenity with id ${id} was not found` });
+    }
   } catch (error) {
     next(error);
   }
