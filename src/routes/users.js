@@ -12,6 +12,11 @@ import authMiddleware from "../middleware/auth.js";
 
 const router = Router();
 
+const userExists = async (id) => {
+  const user = await getUserById(id);
+  return !!user;
+};
+
 router.get("/", async (req, res, next) => {
   try {
     const { username, password, name, email, phoneNumber, profilePicture } =
@@ -44,6 +49,20 @@ router.post("/", async (req, res, next) => {
     );
 
     res.status(201).json(newUser);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.param("id", async (req, res, next, id) => {
+  try {
+    const exists = await userExists(id);
+    if (!exists) {
+      return res
+        .status(404)
+        .json({ message: `User with id ${id} does not exist` });
+    }
+    next();
   } catch (error) {
     next(error);
   }
