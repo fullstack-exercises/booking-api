@@ -13,6 +13,11 @@ import notFoundErrorHandler from "../middleware/notFoundErrorHandler.js";
 
 const router = Router();
 
+const hostExists = async (id) => {
+  const host = await getHostById(id);
+  return !!host;
+};
+
 router.get("/", async (req, res, next) => {
   try {
     const {
@@ -34,6 +39,20 @@ router.get("/", async (req, res, next) => {
       aboutMe
     );
     res.status(200).json(hosts);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.param("id", async (req, res, next, id) => {
+  try {
+    const exists = await hostExists(id);
+    if (!exists) {
+      return res
+        .status(404)
+        .json({ message: `Host with id ${id} does not exist` });
+    }
+    next();
   } catch (error) {
     next(error);
   }

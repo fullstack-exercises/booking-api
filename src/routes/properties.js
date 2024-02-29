@@ -13,6 +13,11 @@ import notFoundErrorHandler from "../middleware/notFoundErrorHandler.js";
 
 const router = Router();
 
+const propertyExists = async (id) => {
+  const property = await getPropertyById(id);
+  return !!property;
+};
+
 router.get("/", async (req, res, next) => {
   try {
     const {
@@ -53,6 +58,20 @@ router.get("/:id", async (req, res, next) => {
     } else {
       res.status(404).json({ message: `Property with id ${id} was not found` });
     }
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.param("id", async (req, res, next, id) => {
+  try {
+    const exists = await propertyExists(id);
+    if (!exists) {
+      return res
+        .status(404)
+        .json({ message: `Property with id ${id} does not exist` });
+    }
+    next();
   } catch (error) {
     next(error);
   }
