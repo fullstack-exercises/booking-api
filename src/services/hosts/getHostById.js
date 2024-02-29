@@ -1,4 +1,3 @@
-import NotFoundError from "../../errors/NotFoundError.js";
 import { PrismaClient } from "@prisma/client";
 
 const getHostById = async (id) => {
@@ -8,10 +7,6 @@ const getHostById = async (id) => {
       id,
     },
   });
-
-  if (!host) {
-    throw new NotFoundError("Host", id);
-  }
 
   return host;
 };

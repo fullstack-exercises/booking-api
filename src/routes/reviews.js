@@ -28,7 +28,11 @@ router.get("/:id", async (req, res, next) => {
     const { id } = req.params;
     const review = await getReviewById(id);
 
-    res.status(200).json(review);
+    if (review) {
+      res.status(200).json(review);
+    } else {
+      res.status(404).json({ message: `Review with id ${id} was not found` });
+    }
   } catch (error) {
     next(error);
   }
@@ -38,7 +42,12 @@ router.post("/", authMiddleware, async (req, res, next) => {
   try {
     const { userId, propertyId, rating, comment } = req.body;
     const newReview = await createReview(userId, propertyId, rating, comment);
-    res.status(201).json(newReview);
+
+    if (newReview) {
+      res.status(200).json(newReview);
+    } else {
+      res.status(404).json({ message: `Review with id ${id} was not found` });
+    }
   } catch (error) {
     next(error);
   }
@@ -55,7 +64,11 @@ router.put("/:id", authMiddleware, async (req, res, next) => {
       rating,
       comment
     );
-    res.status(200).json(updatedReview);
+    if (updatedReview) {
+      res.status(200).json(updatedReview);
+    } else {
+      res.status(404).json({ message: `Review with id ${id} was not found` });
+    }
   } catch (error) {
     next(error);
   }
@@ -67,9 +80,13 @@ router.delete("/:id", authMiddleware, async (req, res, next) => {
     const { id } = req.params;
     const deletedReviewId = await deleteReview(id);
 
-    res.status(200).json({
-      message: `Review with id ${deletedReviewId} was deleted!`,
-    });
+    if (deletedReviewId) {
+      res.status(200).json({
+        message: `Review with id ${deletedReviewId} was deleted!`,
+      });
+    } else {
+      res.status(404).json({ message: `Review with id ${id} was not found` });
+    }
   } catch (error) {
     next(error);
   }

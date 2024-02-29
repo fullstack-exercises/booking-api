@@ -1,4 +1,3 @@
-import NotFoundError from "../../errors/NotFoundError.js";
 import { PrismaClient } from "@prisma/client";
 
 const getAmenityById = async (id) => {
@@ -8,10 +7,6 @@ const getAmenityById = async (id) => {
       id,
     },
   });
-
-  if (!amenity) {
-    throw new NotFoundError("Amenity", id);
-  }
 
   return amenity;
 };

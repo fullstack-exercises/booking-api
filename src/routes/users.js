@@ -9,7 +9,6 @@ import deleteUser from "../services/users/deleteUser.js";
 
 // Middleware
 import authMiddleware from "../middleware/auth.js";
-import notFoundErrorHandler from "../middleware/notFoundErrorHandler.js";
 
 const router = Router();
 
@@ -36,7 +35,13 @@ router.get("/:id", async (req, res, next) => {
     const { id } = req.params;
     const user = await getUserById(id);
 
-    res.status(200).json(user);
+    if (!user) {
+      res
+        .status(404)
+        .json({ message: `404: User with id ${id} was not found` });
+    } else {
+      res.status(200).json(user);
+    }
   } catch (error) {
     next(error);
   }
@@ -54,6 +59,7 @@ router.post("/", authMiddleware, async (req, res, next) => {
       phoneNumber,
       profilePicture
     );
+
     res.status(201).json(newUser);
   } catch (error) {
     next(error);

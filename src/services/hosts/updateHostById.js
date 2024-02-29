@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import NotFoundError from "../../errors/NotFoundError.js";
 
 const updateHostById = async (
   id,
@@ -24,10 +23,6 @@ const updateHostById = async (
       profilePicture,
     },
   });
-
-  if (!updatedHost || updatedHost.count === 0) {
-    throw new NotFoundError("Host", id);
-  }
 
   return {
     message: `Host with id ${id} was updated!`,

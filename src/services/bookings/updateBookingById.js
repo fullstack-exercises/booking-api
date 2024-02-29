@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import NotFoundError from "../../errors/NotFoundError.js";
 
 const updateBookingById = async (
   id,
@@ -26,10 +25,6 @@ const updateBookingById = async (
       bookingStatus,
     },
   });
-
-  if (!updatedBooking || updatedBooking.count === 0) {
-    throw new NotFoundError("Booking", id);
-  }
 
   return {
     message: `Booking with id ${id} was updated!`,
